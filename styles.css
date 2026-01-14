@@ -100,17 +100,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--white);
+    background: var(--brand-red);
     border-radius: 50%;
     text-decoration: none;
     font-size: 1.25rem;
     box-shadow: var(--shadow-md);
     transition: all var(--transition-fast);
-    opacity: 0.6;
 }
 
 .admin-link:hover {
-    opacity: 1;
+    background: var(--brand-red-dark);
     transform: scale(1.1);
     box-shadow: var(--shadow-lg);
 }
