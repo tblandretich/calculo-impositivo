@@ -280,99 +280,291 @@
         .collapse-content.collapsed {
             max-height: 0;
         }
+
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-overlay.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box__logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            border: 3px solid #e63946;
+        }
+
+        .login-box__logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .login-box__company {
+            color: #e63946;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box__title {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box__subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-box .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .login-box .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .login-box .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .login-box .form-group input:focus {
+            outline: none;
+            border-color: #e63946;
+        }
+
+        .login-box .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 1rem;
+        }
+
+        .login-box .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+        }
+
+        .login-error {
+            color: #c1121f;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.visible {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="admin-header">
-            <div>
-                <h1>⚙️ Panel de Administración</h1>
-                <div class="status-indicator">
-                    <span class="status-dot" id="statusDot"></span>
-                    <span id="statusText">Datos cargados</span>
-                </div>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-box__logo">
+                <img src="logo.png" alt="Carlos Andretich S.A.">
             </div>
-            <div class="btn-group">
-                <a href="index.html" class="btn btn--back">← Volver a la App</a>
-                <button class="btn btn--export" onclick="exportarJSON()">📥 Exportar JSON</button>
-                <button class="btn btn--save" onclick="guardarCambios()">💾 Guardar Cambios</button>
-            </div>
-        </div>
+            <p class="login-box__company">Carlos Andretich S.A.</p>
+            <h1 class="login-box__title">Panel de Administración</h1>
+            <p class="login-box__subtitle">Ingrese sus credenciales para continuar</p>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('convenio')">📊 Convenio Multilateral</button>
-            <button class="tab-btn" onclick="showTab('local')">🏠 Contribuyente Local</button>
-            <button class="tab-btn" onclick="showTab('padron')">📋 Provincias con Padrón</button>
-            <button class="tab-btn" onclick="showTab('mensajes')">💬 Mensajes</button>
-        </div>
-
-        <!-- Tab: Convenio Multilateral -->
-        <div id="tab-convenio" class="tab-content active">
-            <div id="convenio-list"></div>
-        </div>
-
-        <!-- Tab: Contribuyente Local -->
-        <div id="tab-local" class="tab-content">
-            <div id="local-list"></div>
-        </div>
-
-        <!-- Tab: Provincias con Padrón -->
-        <div id="tab-padron" class="tab-content">
-            <div class="provincia-card padron-section">
-                <h3>⚠️ Provincias con Padrón</h3>
-                <p style="color: #666; margin-bottom: 1rem;">
-                    Estas provincias requieren revisión de padrón. El sistema mostrará aviso de contactar a Fran.
-                </p>
-                <div class="padron-list" id="padron-list"></div>
-                <div class="add-padron">
-                    <select id="nuevaPadron">
-                        <option value="">Agregar provincia...</option>
-                        <option value="buenos_aires">Buenos Aires</option>
-                        <option value="catamarca">Catamarca</option>
-                        <option value="chubut">Chubut</option>
-                        <option value="cordoba">Córdoba</option>
-                        <option value="entre_rios">Entre Ríos</option>
-                        <option value="formosa">Formosa</option>
-                        <option value="jujuy">Jujuy</option>
-                        <option value="la_pampa">La Pampa</option>
-                        <option value="mendoza">Mendoza</option>
-                        <option value="neuquen">Neuquén</option>
-                        <option value="rio_negro">Río Negro</option>
-                        <option value="san_juan">San Juan</option>
-                        <option value="santa_cruz">Santa Cruz</option>
-                        <option value="santiago_del_estero">Santiago del Estero</option>
-                        <option value="tierra_del_fuego">Tierra del Fuego</option>
-                        <option value="tucuman">Tucumán</option>
-                    </select>
-                    <button class="btn btn--primary" onclick="agregarPadron()">+ Agregar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab: Mensajes -->
-        <div id="tab-mensajes" class="tab-content">
-            <div class="provincia-card">
-                <h3>💬 Mensajes del Sistema</h3>
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Mensaje para Padrón</label>
-                    <textarea id="msg-padron" rows="2"></textarea>
-                </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Mensaje para Exento</label>
-                    <textarea id="msg-exento" rows="2"></textarea>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginUser">Usuario</label>
+                    <input type="text" id="loginUser" placeholder="Ingrese su usuario" required>
                 </div>
                 <div class="form-group">
-                    <label>Mensaje para Derivar a Impuestos</label>
-                    <textarea id="msg-derivar" rows="2"></textarea>
+                    <label for="loginPass">Contraseña</label>
+                    <input type="password" id="loginPass" placeholder="Ingrese su contraseña" required>
                 </div>
-            </div>
+                <button type="submit" class="btn-login">🔐 Iniciar Sesión</button>
+            </form>
+
+            <p class="login-error" id="loginError">❌ Usuario o contraseña incorrectos</p>
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <!-- Admin Content (hidden until login) -->
+    <div class="admin-content" id="adminContent">
+        <div class="container">
+            <div class="admin-header">
+                <div>
+                    <h1>⚙️ Panel de Administración</h1>
+                    <div class="status-indicator">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span id="statusText">Datos cargados</span>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <a href="index.html" class="btn btn--back">← Volver a la App</a>
+                    <button class="btn btn--export" onclick="exportarJSON()">📥 Exportar JSON</button>
+                    <button class="btn btn--save" onclick="guardarCambios()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('convenio')">📊 Convenio Multilateral</button>
+                <button class="tab-btn" onclick="showTab('local')">🏠 Contribuyente Local</button>
+                <button class="tab-btn" onclick="showTab('padron')">📋 Provincias con Padrón</button>
+                <button class="tab-btn" onclick="showTab('mensajes')">💬 Mensajes</button>
+            </div>
+
+            <!-- Tab: Convenio Multilateral -->
+            <div id="tab-convenio" class="tab-content active">
+                <div id="convenio-list"></div>
+            </div>
+
+            <!-- Tab: Contribuyente Local -->
+            <div id="tab-local" class="tab-content">
+                <div id="local-list"></div>
+            </div>
+
+            <!-- Tab: Provincias con Padrón -->
+            <div id="tab-padron" class="tab-content">
+                <div class="provincia-card padron-section">
+                    <h3>⚠️ Provincias con Padrón</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">
+                        Estas provincias requieren revisión de padrón. El sistema mostrará aviso de contactar a Fran.
+                    </p>
+                    <div class="padron-list" id="padron-list"></div>
+                    <div class="add-padron">
+                        <select id="nuevaPadron">
+                            <option value="">Agregar provincia...</option>
+                            <option value="buenos_aires">Buenos Aires</option>
+                            <option value="catamarca">Catamarca</option>
+                            <option value="chubut">Chubut</option>
+                            <option value="cordoba">Córdoba</option>
+                            <option value="entre_rios">Entre Ríos</option>
+                            <option value="formosa">Formosa</option>
+                            <option value="jujuy">Jujuy</option>
+                            <option value="la_pampa">La Pampa</option>
+                            <option value="mendoza">Mendoza</option>
+                            <option value="neuquen">Neuquén</option>
+                            <option value="rio_negro">Río Negro</option>
+                            <option value="san_juan">San Juan</option>
+                            <option value="santa_cruz">Santa Cruz</option>
+                            <option value="santiago_del_estero">Santiago del Estero</option>
+                            <option value="tierra_del_fuego">Tierra del Fuego</option>
+                            <option value="tucuman">Tucumán</option>
+                        </select>
+                        <button class="btn btn--primary" onclick="agregarPadron()">+ Agregar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Mensajes -->
+            <div id="tab-mensajes" class="tab-content">
+                <div class="provincia-card">
+                    <h3>💬 Mensajes del Sistema</h3>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label>Mensaje para Padrón</label>
+                        <textarea id="msg-padron" rows="2"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label>Mensaje para Exento</label>
+                        <textarea id="msg-exento" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje para Derivar a Impuestos</label>
+                        <textarea id="msg-derivar" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+    </div> <!-- Close admin-content -->
 
     <script>
+        // ============ LOGIN SYSTEM ============
+        const VALID_USER = 'Administrador';
+        const VALID_PASS = 'Cal1978Imp!';
+
+        // Check if already logged in
+        function checkSession() {
+            if (sessionStorage.getItem('admin_logged_in') === 'true') {
+                showAdminPanel();
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if (user === VALID_USER && pass === VALID_PASS) {
+                sessionStorage.setItem('admin_logged_in', 'true');
+                showAdminPanel();
+            } else {
+                document.getElementById('loginError').classList.add('show');
+                document.getElementById('loginPass').value = '';
+            }
+        }
+
+        function showAdminPanel() {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('adminContent').classList.add('visible');
+        }
+
+        // Check session on page load
+        document.addEventListener('DOMContentLoaded', checkSession);
+
+        // ============ ADMIN PANEL ============
         // Datos de las reglas (se cargan desde localStorage o fallback)
         let reglas = null;
         let hasChanges = false;
