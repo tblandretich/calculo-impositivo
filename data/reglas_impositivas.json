@@ -1,0 +1,163 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "ultima_actualizacion": "2026-01-09",
+    "autor": "Gabriela Bianchini"
+  },
+  "empresas": ["CA", "RR"],
+  "provincias_con_padron": ["jujuy", "buenos_aires", "tucuman"],
+  "reglas_convenio_multilateral": {
+    "santa_fe": {
+      "nombre": "Santa Fe",
+      "requiere_coeficiente": true,
+      "coeficiente_minimo": 0.10,
+      "con_coeficiente": {
+        "id": 54,
+        "descripcion": "PERCEP IIBB SANTA FE C.M. 1.25%",
+        "alicuota": 1.25
+      },
+      "sin_coeficiente": {
+        "mensaje": "No corresponde percepción (Coeficiente < 0.10)"
+      },
+      "con_1276": {
+        "accion": "derivar",
+        "mensaje": "Derivar a impuestos y contabilidad"
+      }
+    },
+    "corrientes": {
+      "nombre": "Corrientes",
+      "requiere_coeficiente": true,
+      "coeficiente_minimo": 0.10,
+      "con_coeficiente": {
+        "id": 1080,
+        "descripcion": "PERCEP IIBB CORRIENTES CM",
+        "alicuota": null
+      },
+      "sin_coeficiente": {
+        "mensaje": "No corresponde percepción (Coeficiente < 0.10)"
+      }
+    },
+    "chaco": {
+      "nombre": "Chaco",
+      "requiere_coeficiente": false,
+      "resultado": {
+        "id": 1076,
+        "descripcion": "PERCEP IIBB CHACO CM",
+        "alicuota": null
+      }
+    },
+    "la_rioja": {
+      "nombre": "La Rioja",
+      "requiere_coeficiente": false,
+      "resultado": {
+        "id": 1078,
+        "descripcion": "PERCEP IIBB LA RIOJA CM",
+        "alicuota": null
+      }
+    },
+    "misiones": {
+      "nombre": "Misiones",
+      "requiere_coeficiente": false,
+      "resultado": {
+        "id": 346,
+        "descripcion": "PERCEP IIBB MISIONES 3.31%",
+        "alicuota": 3.31
+      }
+    },
+    "salta": {
+      "nombre": "Salta",
+      "requiere_coeficiente": false,
+      "resultado": {
+        "id": 344,
+        "descripcion": "PERCEP IIBB SALTA CM 1.8%",
+        "alicuota": 1.8
+      }
+    },
+    "san_luis": {
+      "nombre": "San Luis",
+      "requiere_coeficiente": true,
+      "coeficiente_minimo": 0.10,
+      "con_coeficiente": {
+        "id": 1100,
+        "descripcion": "PERCEP IIBB SAN LUIS CM",
+        "alicuota": null
+      },
+      "sin_coeficiente": {
+        "mensaje": "No corresponde percepción (Coeficiente < 0.10)"
+      }
+    }
+  },
+  "reglas_local": {
+    "corrientes": {
+      "nombre": "Corrientes",
+      "resultado": {
+        "id": 1074,
+        "descripcion": "PERCEP IIBB CORRIENTES C.L.",
+        "alicuota": null
+      }
+    },
+    "chaco": {
+      "nombre": "Chaco",
+      "resultado": {
+        "id": 1075,
+        "descripcion": "PERCEP IIBB CHACO C.L.",
+        "alicuota": null
+      }
+    },
+    "la_rioja": {
+      "nombre": "La Rioja",
+      "resultado": {
+        "id": 1077,
+        "descripcion": "PERCEP IIBB LA RIOJA C.L.",
+        "alicuota": null
+      }
+    },
+    "misiones": {
+      "nombre": "Misiones",
+      "resultado": {
+        "id": 346,
+        "descripcion": "PERCEP IIBB MISIONES 3.31%",
+        "alicuota": 3.31
+      }
+    },
+    "salta": {
+      "nombre": "Salta",
+      "resultado": {
+        "id": 343,
+        "descripcion": "PERCEP IIBB SALTA C.L. 3.6%",
+        "alicuota": 3.6
+      }
+    },
+    "san_luis": {
+      "nombre": "San Luis",
+      "resultado": {
+        "id": 1099,
+        "descripcion": "PERCEP IIBB SAN LUIS C.L.",
+        "alicuota": null
+      }
+    },
+    "santa_fe": {
+      "nombre": "Santa Fe",
+      "con_1276": {
+        "accion": "derivar",
+        "mensaje": "Derivar a impuestos y contabilidad"
+      },
+      "sin_1276": {
+        "id": 51,
+        "descripcion": "PERCEP IIBB SANTA FE C.L. 2.5%",
+        "alicuota": 2.5
+      },
+      "sin_constancia": {
+        "id": 52,
+        "descripcion": "PERCEP IIBB SANTA FE N.I. 3.6%",
+        "alicuota": 3.6,
+        "nota": "Revisar SIAT (API) - Consultar"
+      }
+    }
+  },
+  "mensajes": {
+    "padron": "⚠️ AVISAR A FRAN: Corresponde revisión de padrón.",
+    "exento": "Agregar conjunto EXENTO en esta provincia.",
+    "derivar_impuestos": "Derivar a impuestos y contabilidad."
+  }
+}

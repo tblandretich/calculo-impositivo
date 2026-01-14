@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Reglas Impositivas</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Admin-specific styles */
+        .admin-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .admin-header .btn-group {
+            gap: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #1e3a5f;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .provincia-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #667eea;
+        }
+
+        .provincia-card h3 {
+            margin: 0 0 1rem 0;
+            color: #1e3a5f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .provincia-card h3 .badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input[type="number"] {
+            width: 120px;
+        }
+
+        .subsection {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .subsection-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn--save {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+        }
+
+        .btn--export {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .btn--back {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn--back:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: #4caf50;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+
+        .status-dot.modified {
+            background: #ff9800;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .padron-section {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .padron-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .padron-tag {
+            padding: 0.5rem 1rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .padron-tag .remove {
+            cursor: pointer;
+            color: #e53935;
+            font-weight: bold;
+        }
+
+        .add-padron {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Collapsible sections */
+        .collapse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1rem;
+        }
+
+        .collapse-header:hover {
+            color: #667eea;
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .collapse-header.collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .collapse-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapse-content.collapsed {
+            max-height: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1>⚙️ Panel de Administración</h1>
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Datos cargados</span>
+                </div>
+            </div>
+            <div class="btn-group">
+                <a href="index.html" class="btn btn--back">← Volver a la App</a>
+                <button class="btn btn--export" onclick="exportarJSON()">📥 Exportar JSON</button>
+                <button class="btn btn--save" onclick="guardarCambios()">💾 Guardar Cambios</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('convenio')">📊 Convenio Multilateral</button>
+            <button class="tab-btn" onclick="showTab('local')">🏠 Contribuyente Local</button>
+            <button class="tab-btn" onclick="showTab('padron')">📋 Provincias con Padrón</button>
+            <button class="tab-btn" onclick="showTab('mensajes')">💬 Mensajes</button>
+        </div>
+
+        <!-- Tab: Convenio Multilateral -->
+        <div id="tab-convenio" class="tab-content active">
+            <div id="convenio-list"></div>
+        </div>
+
+        <!-- Tab: Contribuyente Local -->
+        <div id="tab-local" class="tab-content">
+            <div id="local-list"></div>
+        </div>
+
+        <!-- Tab: Provincias con Padrón -->
+        <div id="tab-padron" class="tab-content">
+            <div class="provincia-card padron-section">
+                <h3>⚠️ Provincias con Padrón</h3>
+                <p style="color: #666; margin-bottom: 1rem;">
+                    Estas provincias requieren revisión de padrón. El sistema mostrará aviso de contactar a Fran.
+                </p>
+                <div class="padron-list" id="padron-list"></div>
+                <div class="add-padron">
+                    <select id="nuevaPadron">
+                        <option value="">Agregar provincia...</option>
+                        <option value="buenos_aires">Buenos Aires</option>
+                        <option value="catamarca">Catamarca</option>
+                        <option value="chubut">Chubut</option>
+                        <option value="cordoba">Córdoba</option>
+                        <option value="entre_rios">Entre Ríos</option>
+                        <option value="formosa">Formosa</option>
+                        <option value="jujuy">Jujuy</option>
+                        <option value="la_pampa">La Pampa</option>
+                        <option value="mendoza">Mendoza</option>
+                        <option value="neuquen">Neuquén</option>
+                        <option value="rio_negro">Río Negro</option>
+                        <option value="san_juan">San Juan</option>
+                        <option value="santa_cruz">Santa Cruz</option>
+                        <option value="santiago_del_estero">Santiago del Estero</option>
+                        <option value="tierra_del_fuego">Tierra del Fuego</option>
+                        <option value="tucuman">Tucumán</option>
+                    </select>
+                    <button class="btn btn--primary" onclick="agregarPadron()">+ Agregar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Mensajes -->
+        <div id="tab-mensajes" class="tab-content">
+            <div class="provincia-card">
+                <h3>💬 Mensajes del Sistema</h3>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Mensaje para Padrón</label>
+                    <textarea id="msg-padron" rows="2"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Mensaje para Exento</label>
+                    <textarea id="msg-exento" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Mensaje para Derivar a Impuestos</label>
+                    <textarea id="msg-derivar" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Datos de las reglas (se cargan desde localStorage o fallback)
+        let reglas = null;
+        let hasChanges = false;
+
+        // Datos fallback (mismos que en app.js)
+        const REGLAS_DEFAULT = {
+            "metadata": {
+                "version": "1.0",
+                "ultima_actualizacion": "2026-01-09",
+                "autor": "Gabriela Bianchini"
+            },
+            "empresas": ["CA", "RR"],
+            "provincias_con_padron": ["jujuy", "buenos_aires", "tucuman"],
+            "reglas_convenio_multilateral": {
+                "santa_fe": {
+                    "nombre": "Santa Fe",
+                    "requiere_coeficiente": true,
+                    "coeficiente_minimo": 0.10,
+                    "con_coeficiente": { "id": 54, "descripcion": "PERCEP IIBB SANTA FE C.M. 1.25%", "alicuota": 1.25 },
+                    "sin_coeficiente": { "mensaje": "No corresponde percepción (Coeficiente < 0.10)" },
+                    "con_1276": { "accion": "derivar", "mensaje": "Derivar a impuestos y contabilidad" }
+                },
+                "corrientes": {
+                    "nombre": "Corrientes",
+                    "requiere_coeficiente": true,
+                    "coeficiente_minimo": 0.10,
+                    "con_coeficiente": { "id": 1080, "descripcion": "PERCEP IIBB CORRIENTES CM", "alicuota": null },
+                    "sin_coeficiente": { "mensaje": "No corresponde percepción (Coeficiente < 0.10)" }
+                },
+                "chaco": { "nombre": "Chaco", "requiere_coeficiente": false, "resultado": { "id": 1076, "descripcion": "PERCEP IIBB CHACO CM", "alicuota": null } },
+                "la_rioja": { "nombre": "La Rioja", "requiere_coeficiente": false, "resultado": { "id": 1078, "descripcion": "PERCEP IIBB LA RIOJA CM", "alicuota": null } },
+                "misiones": { "nombre": "Misiones", "requiere_coeficiente": false, "resultado": { "id": 346, "descripcion": "PERCEP IIBB MISIONES 3.31%", "alicuota": 3.31 } },
+                "salta": { "nombre": "Salta", "requiere_coeficiente": false, "resultado": { "id": 344, "descripcion": "PERCEP IIBB SALTA CM 1.8%", "alicuota": 1.8 } },
+                "san_luis": {
+                    "nombre": "San Luis",
+                    "requiere_coeficiente": true,
+                    "coeficiente_minimo": 0.10,
+                    "con_coeficiente": { "id": 1100, "descripcion": "PERCEP IIBB SAN LUIS CM", "alicuota": null },
+                    "sin_coeficiente": { "mensaje": "No corresponde percepción (Coeficiente < 0.10)" }
+                }
+            },
+            "reglas_local": {
+                "corrientes": { "nombre": "Corrientes", "resultado": { "id": 1074, "descripcion": "PERCEP IIBB CORRIENTES C.L.", "alicuota": null } },
+                "chaco": { "nombre": "Chaco", "resultado": { "id": 1075, "descripcion": "PERCEP IIBB CHACO C.L.", "alicuota": null } },
+                "la_rioja": { "nombre": "La Rioja", "resultado": { "id": 1077, "descripcion": "PERCEP IIBB LA RIOJA C.L.", "alicuota": null } },
+                "misiones": { "nombre": "Misiones", "resultado": { "id": 346, "descripcion": "PERCEP IIBB MISIONES 3.31%", "alicuota": 3.31 } },
+                "salta": { "nombre": "Salta", "resultado": { "id": 343, "descripcion": "PERCEP IIBB SALTA C.L. 3.6%", "alicuota": 3.6 } },
+                "san_luis": { "nombre": "San Luis", "resultado": { "id": 1099, "descripcion": "PERCEP IIBB SAN LUIS C.L.", "alicuota": null } },
+                "santa_fe": {
+                    "nombre": "Santa Fe",
+                    "con_1276": { "accion": "derivar", "mensaje": "Derivar a impuestos y contabilidad" },
+                    "sin_1276": { "id": 51, "descripcion": "PERCEP IIBB SANTA FE C.L. 2.5%", "alicuota": 2.5 },
+                    "sin_constancia": { "id": 52, "descripcion": "PERCEP IIBB SANTA FE N.I. 3.6%", "alicuota": 3.6, "nota": "Revisar SIAT (API) - Consultar" }
+                }
+            },
+            "mensajes": {
+                "padron": "⚠️ AVISAR A FRAN: Corresponde revisión de padrón.",
+                "exento": "Agregar conjunto EXENTO en esta provincia.",
+                "derivar_impuestos": "Derivar a impuestos y contabilidad."
+            }
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarReglas();
+            renderAll();
+        });
+
+        function cargarReglas() {
+            const saved = localStorage.getItem('reglas_impositivas');
+            if (saved) {
+                reglas = JSON.parse(saved);
+                showToast('✓ Datos cargados desde almacenamiento local');
+            } else {
+                reglas = JSON.parse(JSON.stringify(REGLAS_DEFAULT));
+            }
+        }
+
+        function renderAll() {
+            renderConvenio();
+            renderLocal();
+            renderPadron();
+            renderMensajes();
+        }
+
+        function renderConvenio() {
+            const container = document.getElementById('convenio-list');
+            let html = '';
+
+            for (const [key, prov] of Object.entries(reglas.reglas_convenio_multilateral)) {
+                html += renderProvinciaConvenio(key, prov);
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderProvinciaConvenio(key, prov) {
+            const requiereCoef = prov.requiere_coeficiente;
+            const esSantaFe = key === 'santa_fe';
+
+            return `
+                <div class="provincia-card" data-key="${key}">
+                    <div class="collapse-header" onclick="toggleCollapse(this)">
+                        <h3>
+                            📍 ${prov.nombre}
+                            ${requiereCoef ? '<span class="badge">Requiere Coeficiente</span>' : ''}
+                            ${esSantaFe ? '<span class="badge" style="background:#e3f2fd;color:#1565c0;">Tiene 1276</span>' : ''}
+                        </h3>
+                        <span class="collapse-icon">▼</span>
+                    </div>
+                    <div class="collapse-content">
+                        <div class="form-row">
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="coef-${key}" ${requiereCoef ? 'checked' : ''} 
+                                    onchange="updateConvenioCoef('${key}', this.checked)">
+                                <label for="coef-${key}">Requiere Coeficiente CM05</label>
+                            </div>
+                            ${requiereCoef ? `
+                                <div class="form-group">
+                                    <label>Coeficiente Mínimo</label>
+                                    <input type="number" step="0.01" value="${prov.coeficiente_minimo || 0.10}" 
+                                        onchange="updateConvenioField('${key}', 'coeficiente_minimo', parseFloat(this.value))">
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        ${requiereCoef ? `
+                            <div class="subsection">
+                                <div class="subsection-title">Con Coeficiente ≥ Mínimo</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>ID Conjunto</label>
+                                        <input type="number" value="${prov.con_coeficiente?.id || ''}" 
+                                            onchange="updateConvenioNested('${key}', 'con_coeficiente', 'id', parseInt(this.value))">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descripción</label>
+                                        <input type="text" value="${prov.con_coeficiente?.descripcion || ''}" 
+                                            onchange="updateConvenioNested('${key}', 'con_coeficiente', 'descripcion', this.value)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Alícuota %</label>
+                                        <input type="number" step="0.01" value="${prov.con_coeficiente?.alicuota || ''}" 
+                                            onchange="updateConvenioNested('${key}', 'con_coeficiente', 'alicuota', parseFloat(this.value) || null)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="subsection">
+                                <div class="subsection-title">Sin Coeficiente (< Mínimo)</div>
+                                <div class="form-group">
+                                    <label>Mensaje</label>
+                                    <input type="text" value="${prov.sin_coeficiente?.mensaje || ''}" 
+                                        onchange="updateConvenioNested('${key}', 'sin_coeficiente', 'mensaje', this.value)">
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="subsection">
+                                <div class="subsection-title">Resultado</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>ID Conjunto</label>
+                                        <input type="number" value="${prov.resultado?.id || ''}" 
+                                            onchange="updateConvenioNested('${key}', 'resultado', 'id', parseInt(this.value))">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descripción</label>
+                                        <input type="text" value="${prov.resultado?.descripcion || ''}" 
+                                            onchange="updateConvenioNested('${key}', 'resultado', 'descripcion', this.value)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Alícuota %</label>
+                                        <input type="number" step="0.01" value="${prov.resultado?.alicuota || ''}" 
+                                            onchange="updateConvenioNested('${key}', 'resultado', 'alicuota', parseFloat(this.value) || null)">
+                                    </div>
+                                </div>
+                            </div>
+                        `}
+                        
+                        ${esSantaFe ? `
+                            <div class="subsection" style="background: #e3f2fd;">
+                                <div class="subsection-title">Con 1276 (Derivar)</div>
+                                <div class="form-group">
+                                    <label>Mensaje</label>
+                                    <input type="text" value="${prov.con_1276?.mensaje || ''}" 
+                                        onchange="updateConvenioNested('${key}', 'con_1276', 'mensaje', this.value)">
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLocal() {
+            const container = document.getElementById('local-list');
+            let html = '';
+
+            for (const [key, prov] of Object.entries(reglas.reglas_local)) {
+                html += renderProvinciaLocal(key, prov);
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderProvinciaLocal(key, prov) {
+            const esSantaFe = key === 'santa_fe';
+
+            if (esSantaFe) {
+                return `
+                    <div class="provincia-card" data-key="${key}">
+                        <div class="collapse-header" onclick="toggleCollapse(this)">
+                            <h3>📍 ${prov.nombre} <span class="badge" style="background:#e3f2fd;color:#1565c0;">Casos especiales</span></h3>
+                            <span class="collapse-icon">▼</span>
+                        </div>
+                        <div class="collapse-content">
+                            <div class="subsection" style="background: #e3f2fd;">
+                                <div class="subsection-title">Con 1276 (Derivar)</div>
+                                <div class="form-group">
+                                    <label>Mensaje</label>
+                                    <input type="text" value="${prov.con_1276?.mensaje || ''}" 
+                                        onchange="updateLocalNested('${key}', 'con_1276', 'mensaje', this.value)">
+                                </div>
+                            </div>
+                            <div class="subsection">
+                                <div class="subsection-title">Sin 1276 (Con Constancia)</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>ID Conjunto</label>
+                                        <input type="number" value="${prov.sin_1276?.id || ''}" 
+                                            onchange="updateLocalNested('${key}', 'sin_1276', 'id', parseInt(this.value))">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descripción</label>
+                                        <input type="text" value="${prov.sin_1276?.descripcion || ''}" 
+                                            onchange="updateLocalNested('${key}', 'sin_1276', 'descripcion', this.value)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Alícuota %</label>
+                                        <input type="number" step="0.01" value="${prov.sin_1276?.alicuota || ''}" 
+                                            onchange="updateLocalNested('${key}', 'sin_1276', 'alicuota', parseFloat(this.value) || null)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="subsection" style="background: #fff3e0;">
+                                <div class="subsection-title">Sin Constancia de Inscripción</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>ID Conjunto</label>
+                                        <input type="number" value="${prov.sin_constancia?.id || ''}" 
+                                            onchange="updateLocalNested('${key}', 'sin_constancia', 'id', parseInt(this.value))">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descripción</label>
+                                        <input type="text" value="${prov.sin_constancia?.descripcion || ''}" 
+                                            onchange="updateLocalNested('${key}', 'sin_constancia', 'descripcion', this.value)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Alícuota %</label>
+                                        <input type="number" step="0.01" value="${prov.sin_constancia?.alicuota || ''}" 
+                                            onchange="updateLocalNested('${key}', 'sin_constancia', 'alicuota', parseFloat(this.value) || null)">
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top: 0.5rem;">
+                                    <label>Nota</label>
+                                    <input type="text" value="${prov.sin_constancia?.nota || ''}" 
+                                        onchange="updateLocalNested('${key}', 'sin_constancia', 'nota', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="provincia-card" data-key="${key}">
+                    <div class="collapse-header" onclick="toggleCollapse(this)">
+                        <h3>📍 ${prov.nombre}</h3>
+                        <span class="collapse-icon">▼</span>
+                    </div>
+                    <div class="collapse-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ID Conjunto</label>
+                                <input type="number" value="${prov.resultado?.id || ''}" 
+                                    onchange="updateLocalNested('${key}', 'resultado', 'id', parseInt(this.value))">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <input type="text" value="${prov.resultado?.descripcion || ''}" 
+                                    onchange="updateLocalNested('${key}', 'resultado', 'descripcion', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Alícuota %</label>
+                                <input type="number" step="0.01" value="${prov.resultado?.alicuota || ''}" 
+                                    onchange="updateLocalNested('${key}', 'resultado', 'alicuota', parseFloat(this.value) || null)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPadron() {
+            const container = document.getElementById('padron-list');
+            const nombres = {
+                'jujuy': 'Jujuy', 'buenos_aires': 'Buenos Aires', 'tucuman': 'Tucumán',
+                'catamarca': 'Catamarca', 'chubut': 'Chubut', 'cordoba': 'Córdoba',
+                'entre_rios': 'Entre Ríos', 'formosa': 'Formosa', 'la_pampa': 'La Pampa',
+                'mendoza': 'Mendoza', 'neuquen': 'Neuquén', 'rio_negro': 'Río Negro',
+                'san_juan': 'San Juan', 'santa_cruz': 'Santa Cruz',
+                'santiago_del_estero': 'Santiago del Estero', 'tierra_del_fuego': 'Tierra del Fuego'
+            };
+
+            container.innerHTML = reglas.provincias_con_padron.map(key => `
+                <div class="padron-tag">
+                    ${nombres[key] || key}
+                    <span class="remove" onclick="removePadron('${key}')">✕</span>
+                </div>
+            `).join('');
+        }
+
+        function renderMensajes() {
+            document.getElementById('msg-padron').value = reglas.mensajes?.padron || '';
+            document.getElementById('msg-exento').value = reglas.mensajes?.exento || '';
+            document.getElementById('msg-derivar').value = reglas.mensajes?.derivar_impuestos || '';
+
+            // Add event listeners
+            document.getElementById('msg-padron').onchange = (e) => {
+                reglas.mensajes.padron = e.target.value;
+                markChanged();
+            };
+            document.getElementById('msg-exento').onchange = (e) => {
+                reglas.mensajes.exento = e.target.value;
+                markChanged();
+            };
+            document.getElementById('msg-derivar').onchange = (e) => {
+                reglas.mensajes.derivar_impuestos = e.target.value;
+                markChanged();
+            };
+        }
+
+        // Update functions
+        function updateConvenioCoef(key, value) {
+            reglas.reglas_convenio_multilateral[key].requiere_coeficiente = value;
+            markChanged();
+            renderConvenio(); // Re-render to show/hide fields
+        }
+
+        function updateConvenioField(key, field, value) {
+            reglas.reglas_convenio_multilateral[key][field] = value;
+            markChanged();
+        }
+
+        function updateConvenioNested(key, section, field, value) {
+            if (!reglas.reglas_convenio_multilateral[key][section]) {
+                reglas.reglas_convenio_multilateral[key][section] = {};
+            }
+            reglas.reglas_convenio_multilateral[key][section][field] = value;
+            markChanged();
+        }
+
+        function updateLocalNested(key, section, field, value) {
+            if (!reglas.reglas_local[key][section]) {
+                reglas.reglas_local[key][section] = {};
+            }
+            reglas.reglas_local[key][section][field] = value;
+            markChanged();
+        }
+
+        function agregarPadron() {
+            const select = document.getElementById('nuevaPadron');
+            const value = select.value;
+            if (value && !reglas.provincias_con_padron.includes(value)) {
+                reglas.provincias_con_padron.push(value);
+                renderPadron();
+                markChanged();
+            }
+            select.selectedIndex = 0;
+        }
+
+        function removePadron(key) {
+            reglas.provincias_con_padron = reglas.provincias_con_padron.filter(p => p !== key);
+            renderPadron();
+            markChanged();
+        }
+
+        // UI Helpers
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        function toggleCollapse(header) {
+            header.classList.toggle('collapsed');
+            header.nextElementSibling.classList.toggle('collapsed');
+        }
+
+        function markChanged() {
+            hasChanges = true;
+            document.getElementById('statusDot').classList.add('modified');
+            document.getElementById('statusText').textContent = 'Cambios sin guardar';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Save/Export functions
+        function guardarCambios() {
+            // Update metadata
+            reglas.metadata.ultima_actualizacion = new Date().toISOString().split('T')[0];
+
+            // Save to localStorage
+            localStorage.setItem('reglas_impositivas', JSON.stringify(reglas));
+
+            hasChanges = false;
+            document.getElementById('statusDot').classList.remove('modified');
+            document.getElementById('statusText').textContent = 'Cambios guardados';
+            showToast('✓ Cambios guardados correctamente');
+        }
+
+        function exportarJSON() {
+            const dataStr = JSON.stringify(reglas, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'reglas_impositivas.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('✓ JSON exportado');
+        }
+
+        // Warn before leaving with unsaved changes
+        window.onbeforeunload = function () {
+            if (hasChanges) {
+                return '¿Seguro que desea salir? Hay cambios sin guardar.';
+            }
+        };
+    </script>
+</body>
+
+</html>

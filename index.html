@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Herramienta de capacitación para cálculo de percepciones IIBB - CA/RR">
+    <title>Capacitación - Cálculo Impositivo CA/RR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__logo">📊</div>
+            <h1 class="header__title">Parametrización Impositiva</h1>
+            <p class="header__subtitle">Herramienta de capacitación para cálculo de percepciones IIBB</p>
+        </header>
+
+        <!-- Main Card -->
+        <main class="card">
+            <div class="card__header">
+                <h2 class="card__header-title">
+                    <span>🧮</span>
+                    Asistente de Cálculo
+                </h2>
+            </div>
+            
+            <div class="card__body">
+                <!-- Stepper -->
+                <div class="stepper" id="stepper">
+                    <div class="stepper__step active">
+                        <div class="stepper__circle">1</div>
+                    </div>
+                    <div class="stepper__step">
+                        <div class="stepper__line"></div>
+                        <div class="stepper__circle">2</div>
+                    </div>
+                    <div class="stepper__step">
+                        <div class="stepper__line"></div>
+                        <div class="stepper__circle">3</div>
+                    </div>
+                    <div class="stepper__step">
+                        <div class="stepper__line"></div>
+                        <div class="stepper__circle">4</div>
+                    </div>
+                    <div class="stepper__step">
+                        <div class="stepper__line"></div>
+                        <div class="stepper__circle">5</div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Empresa -->
+                <section class="step-section active" id="step1">
+                    <div class="form-group">
+                        <label class="form-label">
+                            ¿A qué empresa corresponde? 
+                            <span class="form-label__hint">(Paso 1 de 5)</span>
+                        </label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="empresa" id="empresaCA" value="CA">
+                                <label class="radio-option__label" for="empresaCA">
+                                    <span class="radio-option__icon">🏢</span>
+                                    <span class="radio-option__text">CA</span>
+                                    <span class="radio-option__desc">Casa Acumuladores</span>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="empresa" id="empresaRR" value="RR">
+                                <label class="radio-option__label" for="empresaRR">
+                                    <span class="radio-option__icon">🏭</span>
+                                    <span class="radio-option__text">RR</span>
+                                    <span class="radio-option__desc">Repuestos Rafaela</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 2: Tipo de Contribuyente -->
+                <section class="step-section" id="step2">
+                    <div class="form-group">
+                        <label class="form-label">
+                            ¿Es Local o Convenio Multilateral?
+                            <span class="form-label__hint">(Según constancia inscripción IIBB)</span>
+                        </label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="tipoContribuyente" id="tipoLocal" value="local">
+                                <label class="radio-option__label" for="tipoLocal">
+                                    <span class="radio-option__icon">📍</span>
+                                    <span class="radio-option__text">Local</span>
+                                    <span class="radio-option__desc">Inscripto en una sola provincia</span>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="tipoContribuyente" id="tipoConvenio" value="convenio">
+                                <label class="radio-option__label" for="tipoConvenio">
+                                    <span class="radio-option__icon">🗺️</span>
+                                    <span class="radio-option__text">Convenio Multilateral</span>
+                                    <span class="radio-option__desc">Opera en varias provincias</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 3: Provincia -->
+                <section class="step-section" id="step3">
+                    <div class="form-group">
+                        <label class="form-label" for="provincia">
+                            ¿En qué provincia coincidimos?
+                            <span class="form-label__hint">(Provincia donde somos agentes de percepción)</span>
+                        </label>
+                        <select class="form-select" id="provincia">
+                            <option value="">-- Seleccione una provincia --</option>
+                            <option value="santa_fe">Santa Fe</option>
+                            <option value="salta">Salta</option>
+                            <option value="misiones">Misiones</option>
+                            <option value="corrientes">Corrientes</option>
+                            <option value="chaco">Chaco</option>
+                            <option value="la_rioja">La Rioja</option>
+                            <option value="san_luis">San Luis</option>
+                            <optgroup label="── Provincias con Padrón ──">
+                                <option value="jujuy">Jujuy</option>
+                                <option value="buenos_aires">Buenos Aires</option>
+                                <option value="tucuman">Tucumán</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Step 4: Condiciones Adicionales -->
+                <section class="step-section" id="step4">
+                    <div class="info-box">
+                        <span class="info-box__icon">💡</span>
+                        <span class="info-box__text">
+                            Complete las condiciones adicionales según la documentación del cliente.
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="certificadoExclusion">
+                            <span class="checkbox-option__label">¿Tiene certificado de exclusión de percepción?</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" id="grupo1276">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="tiene1276">
+                            <span class="checkbox-option__label">¿Tiene formulario 1276? (Solo Santa Fe)</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" id="grupoConstancia">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="tieneConstancia" checked>
+                            <span class="checkbox-option__label">¿Tiene constancia de inscripción IIBB?</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" id="coeficienteGroup">
+                        <label class="form-label" for="coeficienteCM05">
+                            Coeficiente Unificado (CM05)
+                            <span class="form-label__hint">Valor del coeficiente según formulario CM05</span>
+                        </label>
+                        <input type="number" 
+                               class="form-input" 
+                               id="coeficienteCM05" 
+                               step="0.01" 
+                               min="0" 
+                               max="1"
+                               placeholder="Ej: 0.15">
+                    </div>
+                </section>
+
+                <!-- Step 5: Resultado -->
+                <section class="step-section" id="step5">
+                    <div id="resultContainer">
+                        <!-- Resultado se inserta aquí dinámicamente -->
+                    </div>
+                </section>
+
+                <!-- Navegación -->
+                <div class="btn-group">
+                    <button id="prevBtn" class="btn btn--secondary" style="visibility: hidden;">
+                        ← Anterior
+                    </button>
+                    <button id="nextBtn" class="btn btn--primary btn--lg" style="margin-left: auto;">
+                        Siguiente →
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Version Info -->
+        <div class="version-info" id="versionInfo">
+            Cargando información de versión...
+        </div>
+    </div>
+
+    <!-- Reset Button -->
+    <button id="resetBtn" class="reset-btn" title="Reiniciar">
+        🔄
+    </button>
+
+    <script src="app.js"></script>
+</body>
+</html>
