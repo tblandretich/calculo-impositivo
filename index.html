@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Herramienta de capacitación para cálculo de percepciones IIBB - CA/RR">
-    <title>Capacitación - Cálculo Impositivo CA/RR</title>
+    <title>Carlos Andretich S.A. - Cálculo Impositivo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Header -->
         <header class="header">
-            <div class="header__logo">📊</div>
+            <div class="header__logo">
+                <img src="logo.png" alt="Carlos Andretich S.A.">
+            </div>
+            <p class="header__company">Carlos Andretich S.A.</p>
             <h1 class="header__title">Parametrización Impositiva</h1>
             <p class="header__subtitle">Herramienta de capacitación para cálculo de percepciones IIBB</p>
         </header>
@@ -27,7 +32,7 @@
                     Asistente de Cálculo
                 </h2>
             </div>
-            
+
             <div class="card__body">
                 <!-- Stepper -->
                 <div class="stepper" id="stepper">
@@ -56,7 +61,7 @@
                 <section class="step-section active" id="step1">
                     <div class="form-group">
                         <label class="form-label">
-                            ¿A qué empresa corresponde? 
+                            ¿A qué empresa corresponde?
                             <span class="form-label__hint">(Paso 1 de 5)</span>
                         </label>
                         <div class="radio-group">
@@ -168,13 +173,8 @@
                             Coeficiente Unificado (CM05)
                             <span class="form-label__hint">Valor del coeficiente según formulario CM05</span>
                         </label>
-                        <input type="number" 
-                               class="form-input" 
-                               id="coeficienteCM05" 
-                               step="0.01" 
-                               min="0" 
-                               max="1"
-                               placeholder="Ej: 0.15">
+                        <input type="number" class="form-input" id="coeficienteCM05" step="0.01" min="0" max="1"
+                            placeholder="Ej: 0.15">
                     </div>
                 </section>
 
@@ -210,4 +210,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>
