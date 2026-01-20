@@ -363,7 +363,7 @@ function calculateResult() {
     // Si es Agente de Percepción en Santa Fe -> EXENTO (ambos tributan en misma provincia)
     if (provincia === 'santa_fe' && esAgentePercepcion) {
         resultado.titulo = 'CONJUNTO EXENTO';
-        resultado.descripcion = 'El cliente es Agente de Percepción en Santa Fe. No corresponde percibirle ya que ambos tributan en la misma provincia.';
+        resultado.descripcion = 'No corresponde percibirse entre agentes de percepción en IIBB Santa Fe.';
         resultado.tipo = 'success';
         resultado.icono = '🛡️';
         resultado.accion = 'Agregar a conjunto EXENTO en esta provincia';
