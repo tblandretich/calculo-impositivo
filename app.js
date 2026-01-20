@@ -14,7 +14,8 @@ const AppState = {
         tieneCertificado: false,
         tiene1276: false,
         tieneConstancia: true,
-        coeficienteCM05: null
+        coeficienteCM05: null,
+        esAgentePercepcion: false
     },
     reglas: null
 };
@@ -178,6 +179,11 @@ function setupEventListeners() {
         updateUI();
     });
 
+    // Es Agente de Percepción (Santa Fe)
+    document.getElementById('esAgentePercepcion')?.addEventListener('change', (e) => {
+        AppState.data.esAgentePercepcion = e.target.checked;
+    });
+
     // Coeficiente CM05
     document.getElementById('coeficienteCM05')?.addEventListener('input', (e) => {
         AppState.data.coeficienteCM05 = parseFloat(e.target.value) || 0;
@@ -305,6 +311,19 @@ function updateDynamicOptions() {
             !AppState.data.tiene1276;
         grupoConstancia.classList.toggle('hidden', !esSantaFeLocalSin1276);
     }
+
+    // Mostrar campo Agente de Percepción solo para Santa Fe
+    const grupoAgentePercepcion = document.getElementById('grupoAgentePercepcion');
+    if (grupoAgentePercepcion) {
+        const esSantaFe = AppState.data.provincia === 'santa_fe';
+        grupoAgentePercepcion.classList.toggle('hidden', !esSantaFe);
+        // Si cambia de provincia, resetear el checkbox
+        if (!esSantaFe) {
+            AppState.data.esAgentePercepcion = false;
+            const checkbox = document.getElementById('esAgentePercepcion');
+            if (checkbox) checkbox.checked = false;
+        }
+    }
 }
 
 function requiresCoeficiente() {
@@ -319,7 +338,7 @@ function requiresCoeficiente() {
 }
 
 function calculateResult() {
-    const { empresa, tipoContribuyente, provincia, tieneCertificado, tiene1276, tieneConstancia, coeficienteCM05 } = AppState.data;
+    const { empresa, tipoContribuyente, provincia, tieneCertificado, tiene1276, tieneConstancia, coeficienteCM05, esAgentePercepcion } = AppState.data;
     const reglas = AppState.reglas;
 
     let resultado = {
@@ -337,6 +356,17 @@ function calculateResult() {
         resultado.descripcion = reglas.mensajes.exento;
         resultado.tipo = 'success';
         resultado.icono = '🛡️';
+        renderResult(resultado);
+        return;
+    }
+
+    // Si es Agente de Percepción en Santa Fe -> EXENTO (ambos tributan en misma provincia)
+    if (provincia === 'santa_fe' && esAgentePercepcion) {
+        resultado.titulo = 'CONJUNTO EXENTO';
+        resultado.descripcion = 'El cliente es Agente de Percepción en Santa Fe. No corresponde percibirle ya que ambos tributan en la misma provincia.';
+        resultado.tipo = 'success';
+        resultado.icono = '🛡️';
+        resultado.accion = 'Agregar a conjunto EXENTO en esta provincia';
         renderResult(resultado);
         return;
     }
@@ -486,7 +516,8 @@ function resetApp() {
         tieneCertificado: false,
         tiene1276: false,
         tieneConstancia: true,
-        coeficienteCM05: null
+        coeficienteCM05: null,
+        esAgentePercepcion: false
     };
 
     // Limpiar selecciones
