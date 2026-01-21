@@ -15,7 +15,8 @@ const AppState = {
         tiene1276: false,
         tieneConstancia: true,
         coeficienteCM05: null,
-        esAgentePercepcion: false
+        esAgentePercepcion: false,
+        informaCoeficiente: false
     },
     reglas: null
 };
@@ -184,6 +185,12 @@ function setupEventListeners() {
         AppState.data.esAgentePercepcion = e.target.checked;
     });
 
+    // Informa Coeficiente (Convenio Multilateral)
+    document.getElementById('informaCoeficiente')?.addEventListener('change', (e) => {
+        AppState.data.informaCoeficiente = e.target.checked;
+        updateUI();
+    });
+
     // Coeficiente CM05
     document.getElementById('coeficienteCM05')?.addEventListener('input', (e) => {
         AppState.data.coeficienteCM05 = parseFloat(e.target.value) || 0;
@@ -290,12 +297,27 @@ function updateButtons() {
 function updateDynamicOptions() {
     // Mostrar/ocultar campo coeficiente según provincia y tipo
     const coeficienteGroup = document.getElementById('coeficienteGroup');
+    const grupoInformaCoeficiente = document.getElementById('grupoInformaCoeficiente');
     const grupo1276 = document.getElementById('grupo1276');
     const grupoConstancia = document.getElementById('grupoConstancia');
 
+    // Mostrar checkbox "Informa Coeficiente" solo para Convenio Multilateral
+    if (grupoInformaCoeficiente) {
+        const esConvenio = AppState.data.tipoContribuyente === 'convenio';
+        grupoInformaCoeficiente.classList.toggle('hidden', !esConvenio);
+        // Si cambia a Local, resetear
+        if (!esConvenio) {
+            AppState.data.informaCoeficiente = false;
+            const checkbox = document.getElementById('informaCoeficiente');
+            if (checkbox) checkbox.checked = false;
+        }
+    }
+
+    // Mostrar campo coeficiente solo si es Convenio Y marcó que informa coeficiente
     if (coeficienteGroup) {
-        const requiereCoef = requiresCoeficiente();
-        coeficienteGroup.classList.toggle('hidden', !requiereCoef);
+        const mostrarCoeficiente = AppState.data.tipoContribuyente === 'convenio' &&
+            AppState.data.informaCoeficiente;
+        coeficienteGroup.classList.toggle('hidden', !mostrarCoeficiente);
     }
 
     // Mostrar campo 1276 solo para Santa Fe
@@ -338,7 +360,7 @@ function requiresCoeficiente() {
 }
 
 function calculateResult() {
-    const { empresa, tipoContribuyente, provincia, tieneCertificado, tiene1276, tieneConstancia, coeficienteCM05, esAgentePercepcion } = AppState.data;
+    const { empresa, tipoContribuyente, provincia, tieneCertificado, tiene1276, tieneConstancia, coeficienteCM05, esAgentePercepcion, informaCoeficiente } = AppState.data;
     const reglas = AppState.reglas;
 
     let resultado = {
@@ -410,7 +432,13 @@ function calculateResult() {
         if (reglasProv.requiere_coeficiente) {
             const coefMin = reglasProv.coeficiente_minimo;
 
-            if (coeficienteCM05 >= coefMin) {
+            // Si NO informa coeficiente -> usar 1.25% por defecto
+            if (!informaCoeficiente) {
+                resultado.titulo = 'AGREGAR CONJUNTO';
+                resultado.id = `ID ${reglasProv.con_coeficiente.id}`;
+                resultado.descripcion = reglasProv.con_coeficiente.descripcion;
+                resultado.descripcion += ' (1,25% - No informa coeficiente)';
+            } else if (coeficienteCM05 >= coefMin) {
                 resultado.titulo = 'AGREGAR CONJUNTO';
                 resultado.id = `ID ${reglasProv.con_coeficiente.id}`;
                 resultado.descripcion = reglasProv.con_coeficiente.descripcion;
@@ -517,7 +545,8 @@ function resetApp() {
         tiene1276: false,
         tieneConstancia: true,
         coeficienteCM05: null,
-        esAgentePercepcion: false
+        esAgentePercepcion: false,
+        informaCoeficiente: false
     };
 
     // Limpiar selecciones

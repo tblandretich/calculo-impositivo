@@ -180,7 +180,17 @@
                         </label>
                     </div>
 
-                    <div class="form-group" id="coeficienteGroup">
+                    <div class="form-group hidden" id="grupoInformaCoeficiente">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="informaCoeficiente">
+                            <span class="checkbox-option__label">¿Informa Coeficiente unificado?</span>
+                        </label>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; margin-left: 0.5rem;">
+                            ℹ️ Si no informa coeficiente, se aplicará percepción del 1,25% por defecto.
+                        </p>
+                    </div>
+
+                    <div class="form-group hidden" id="coeficienteGroup">
                         <label class="form-label" for="coeficienteCM05">
                             Coeficiente Unificado (CM05)
                             <span class="form-label__hint">Valor del coeficiente según formulario CM05</span>
